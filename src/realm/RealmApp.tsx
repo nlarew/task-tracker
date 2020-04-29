@@ -21,7 +21,7 @@ interface RealmAppProps {
 function createRealmAppWithId(appId: string) {
   return new RealmWeb.App({
     id: appId,
-    baseUrl: "https://stitch-dev.mongodb.com"
+    baseUrl: "https://realm-dev.mongodb.com"
   });
 }
 

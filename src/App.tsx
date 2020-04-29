@@ -19,7 +19,7 @@ const GET_DOGS = gql`
 
 const AppContainer: React.FC = (props) => {
   return (
-    <RealmApp id="task-tracker-phiin">
+    <RealmApp id="task-tracker-lgpko">
       <App />
     </RealmApp>
   )
@@ -45,10 +45,7 @@ function AuthenticatedApp() {
   }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <button onClick={() => handleLogout()}>Log Out</button>
-      </header>
+      <button onClick={() => handleLogout()}>Log Out</button>
     </div>
   )
 }
