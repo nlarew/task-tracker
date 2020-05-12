@@ -7,29 +7,29 @@ type UserID = ObjectID;
 export type Project = {
   _id: ProjectID;
   _partition?: ProjectID;
-  name: String;
+  name: string;
   users: UserID[]
 }
 
 export type Task = {
   _id: ObjectID;
   _partition?: ProjectID;
-  assignee: User | null;
+  assignee?: User;
   status: TaskStatus;
-  description: String;
+  description: string;
   watchers: UserID[];
 }
 
 export type User = {
   _id: UserID;
   _partition?: UserID;
-  name: String;
-  image: String;
+  name: string;
+  image?: string;
   projects: ProjectID[];
 }
 
 export enum TaskStatus {
-  Open,
-  InProgress,
-  Complete,
+  Open = "Open",
+  InProgress = "InProgress",
+  Complete = "Complete",
 }
