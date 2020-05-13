@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "@emotion/styled";
-import TaskList from "./TaskList";
+import TaskList, { TaskLists } from "./TaskList";
 import { Task, TaskStatus } from "../types";
 import { useTasks } from "../hooks/useTasks";
 
@@ -46,7 +46,7 @@ const Board: React.FC = () => {
   return (
     <TaskBoard>
       {!loading && (
-        <TaskLists>
+        <TaskLists taskActions={taskActions}>
           {lists.map(({ status, displayName, tasks }) => {
             return (
               <TaskList
@@ -71,11 +71,4 @@ const TaskBoard = styled.div`
   display: flex;
   flex-direction: column;
   text-align: left;
-`;
-
-const TaskLists = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
 `;

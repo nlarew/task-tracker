@@ -2,12 +2,45 @@
 import * as React from "react";
 import { css, jsx } from "@emotion/core";
 import styled from "@emotion/styled";
-import { Task, TaskStatus } from "../types";
+import { Task, TaskStatus, statusMap } from "../types";
 import { uiColors } from "@leafygreen-ui/palette";
 
 import TaskCard, { DraftTaskCard } from "./TaskCard";
 import { TaskActions } from "../hooks/useTasks";
 import useDraftTask from "../hooks/useDraftTask";
+
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+
+interface TaskListsProps {
+  taskActions: TaskActions;
+}
+export function TaskLists({
+  taskActions,
+  children,
+}: React.PropsWithChildren<TaskListsProps>): React.ReactElement {
+  return (
+    <DragDropContext onDragEnd={(result) => {
+      if(!result.destination) return
+      const taskId = result.draggableId;
+      const { droppableId: oldStatus } = result.source;
+      const { droppableId: newStatus } = result.destination;
+      if(oldStatus !== newStatus) {
+        taskActions.updateTask(taskId, { status: statusMap.get(newStatus) })
+      }
+    }}>
+      <div
+        css={css`
+          width: 100%;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+        `}
+      >
+        {children}
+      </div>
+    </DragDropContext>
+  );
+}
 
 interface TaskListProps {
   status: TaskStatus;
@@ -15,43 +48,42 @@ interface TaskListProps {
   tasks: Task[];
   taskActions: TaskActions;
 }
-const TaskList: React.FC<TaskListProps> = ({
-  status,
-  displayName,
-  tasks,
-  taskActions,
-}) => {
+export default function TaskList(props: TaskListProps): React.ReactElement {
+  const { status, displayName, tasks, taskActions } = props;
   const [draft, draftActions] = useDraftTask(taskActions);
-  
-  return (
-    <Layout>
-      <ListContainer>
-        <ListTitle>{displayName}</ListTitle>
-        {tasks.map((task) => (
-          <ListItem key={task._id}>
-            <TaskCard task={task} />
-          </ListItem>
-        ))}
 
-        {draft && (
-          <ListItem>
-            <DraftTaskCard draft={draft} draftActions={draftActions} />
-          </ListItem>
-        )}
-        {!draft && (
-          <ListButton
-            onClick={() =>
-              draftActions.updateDraft({ status, description: "" })
-            }
-          >
-            + Add Task
-          </ListButton>
-        )}
-      </ListContainer>
-    </Layout>
+  return (
+    <Droppable droppableId={status}>
+      {(provided) => (
+        <Layout ref={provided.innerRef} {...provided.droppableProps}>
+          <ListContainer>
+            <ListTitle>{displayName}</ListTitle>
+            {tasks.map((task, i) => (
+              <DraggableListItem key={task._id} id={task._id} index={i}>
+                <TaskCard task={task} />
+              </DraggableListItem>
+            ))}
+            {provided.placeholder}
+            {draft && (
+              <ListItem>
+                <DraftTaskCard draft={draft} draftActions={draftActions} />
+              </ListItem>
+            )}
+            {!draft && (
+              <ListButton
+                onClick={() =>
+                  draftActions.updateDraft({ status, description: "" })
+                }
+              >
+                + Add Task
+              </ListButton>
+            )}
+          </ListContainer>
+        </Layout>
+      )}
+    </Droppable>
   );
-};
-export default TaskList;
+}
 
 const Layout = styled.div`
   display: flex;
@@ -81,6 +113,23 @@ const ListItem = styled.div`
     margin-bottom: 16px;
   }
 `;
+
+const DraggableListItem: React.FC<{ id: any, index: number }> = ({ id, index, children }) => {
+  return (
+    <Draggable draggableId={id} index={index}>
+      {(provided) => (
+        <ListItem
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+        >
+          {children}
+        </ListItem>
+      )}
+    </Draggable>
+  )
+}
+
 const ListButton = styled.button`
   padding: 8px;
   border: none;
