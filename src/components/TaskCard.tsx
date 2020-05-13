@@ -3,7 +3,7 @@ import * as React from "react";
 import { css, jsx } from "@emotion/core";
 import styled from "@emotion/styled";
 import { Task, TaskStatus, User } from "../types";
-import { DraftTask, DraftTaskActions } from "./TaskList";
+import { DraftTask, DraftTaskActions } from "../hooks/useDraftTask";
 import Card from "@leafygreen-ui/card";
 import Button from "@leafygreen-ui/button";
 import TextInput from "@leafygreen-ui/text-input";

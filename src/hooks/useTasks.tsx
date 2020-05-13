@@ -3,7 +3,7 @@ import { Task } from "../types";
 
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
-import { DraftTask } from "../components/TaskList";
+import { DraftTask } from "./useDraftTask";
 
 const getAllTasksQuery = gql`
   query GetAllTasks {
