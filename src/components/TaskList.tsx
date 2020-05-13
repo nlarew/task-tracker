@@ -11,23 +11,61 @@ import useDraftTask from "../hooks/useDraftTask";
 
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
+
+type TaskListDescription = {
+  status: TaskStatus;
+  displayName: string;
+  tasks: Array<Task>;
+}
+
+function useTaskLists(tasks: Array<Task>): Array<TaskListDescription> {
+  return React.useMemo(
+    () => ([
+      {
+        status: TaskStatus.Open,
+        displayName: "Open",
+        tasks: tasks.filter(
+          (task: Task) => TaskStatus[task.status] === TaskStatus.Open
+        )
+      },
+      {
+        status: TaskStatus.InProgress,
+        displayName: "In Progress",
+        tasks: tasks.filter(
+          (task: Task) => TaskStatus[task.status] === TaskStatus.InProgress
+        )
+      },
+      {
+        status: TaskStatus.Complete,
+        displayName: "Complete",
+        tasks: tasks.filter(
+          (task: Task) => TaskStatus[task.status] === TaskStatus.Complete
+        )
+      },
+    ]),
+    [tasks]
+  );
+}
+
 interface TaskListsProps {
+  tasks: Task[];
   taskActions: TaskActions;
 }
-export function TaskLists({
-  taskActions,
-  children,
-}: React.PropsWithChildren<TaskListsProps>): React.ReactElement {
+export function TaskLists(props: TaskListsProps): React.ReactElement {
+  const { tasks, taskActions } = props;
+  const lists = useTaskLists(tasks);
   return (
-    <DragDropContext onDragEnd={(result) => {
-      if(!result.destination) return
-      const taskId = result.draggableId;
-      const { droppableId: oldStatus } = result.source;
-      const { droppableId: newStatus } = result.destination;
-      if(oldStatus !== newStatus) {
-        taskActions.updateTask(taskId, { status: statusMap.get(newStatus) })
-      }
-    }}>
+    <DragDropContext
+      onDragEnd={(result) => {
+        if (!result.destination) return;
+        const taskId = result.draggableId;
+        const { droppableId: oldStatus } = result.source;
+        const { droppableId: newStatus } = result.destination;
+        if (oldStatus !== newStatus) {
+          taskActions.updateTask(taskId, { status: statusMap.get(newStatus) });
+        }
+      }}
+    >
       <div
         css={css`
           width: 100%;
@@ -36,7 +74,17 @@ export function TaskLists({
           justify-content: center;
         `}
       >
-        {children}
+        {lists.map(({ status, displayName, tasks }) => {
+          return (
+            <TaskList
+              key={status}
+              status={status}
+              displayName={displayName}
+              tasks={tasks}
+              taskActions={taskActions}
+            />
+          );
+        })}
       </div>
     </DragDropContext>
   );
@@ -114,7 +162,11 @@ const ListItem = styled.div`
   }
 `;
 
-const DraggableListItem: React.FC<{ id: any, index: number }> = ({ id, index, children }) => {
+const DraggableListItem: React.FC<{ id: any; index: number }> = ({
+  id,
+  index,
+  children,
+}) => {
   return (
     <Draggable draggableId={id} index={index}>
       {(provided) => (
@@ -127,8 +179,8 @@ const DraggableListItem: React.FC<{ id: any, index: number }> = ({ id, index, ch
         </ListItem>
       )}
     </Draggable>
-  )
-}
+  );
+};
 
 const ListButton = styled.button`
   padding: 8px;
