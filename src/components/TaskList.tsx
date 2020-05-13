@@ -1,5 +1,6 @@
+/** @jsx jsx */
 import * as React from "react";
-// import { css, jsx } from "@emotion/core";
+import { css, jsx } from "@emotion/core";
 import styled from "@emotion/styled";
 import { Task, TaskStatus } from "../types";
 import { uiColors } from "@leafygreen-ui/palette";
