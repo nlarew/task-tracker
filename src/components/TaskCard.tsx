@@ -3,18 +3,21 @@ import * as React from "react";
 import { css, jsx } from "@emotion/core";
 import styled from "@emotion/styled";
 import { Task, TaskStatus, User } from "../types";
+import { DraftTask, DraftTaskActions } from "./TaskList";
 import Card from "@leafygreen-ui/card";
+import Button from "@leafygreen-ui/button";
+import TextInput from "@leafygreen-ui/text-input";
 import { uiColors } from "@leafygreen-ui/palette";
 
 interface TaskCardProps {
   task: Task;
 }
-const statusMessage = new Map<TaskStatus, string>([
+const statusMessages = new Map<TaskStatus, string>([
   [TaskStatus.Open, "Open"],
   [TaskStatus.InProgress, "In Progress"],
   [TaskStatus.Complete, "Complete"],
 ]);
-const statusColor = new Map<TaskStatus, { background: string; text: string }>([
+const statusColors = new Map<TaskStatus, { background: string; text: string }>([
   [
     TaskStatus.Open,
     { background: uiColors.blue.base, text: uiColors.gray.light3 },
@@ -29,27 +32,84 @@ const statusColor = new Map<TaskStatus, { background: string; text: string }>([
   ],
 ]);
 
-const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
-  const colors = statusColor.get(task.status);
+const KeyID = styled.div`
+  font-size: 10px;
+`
+
+export default function TaskCard({ task }: TaskCardProps): React.ReactElement {
+  const statusColor = statusColors.get(task.status);
+  const statusMessage = statusMessages.get(task.status)
+  return (
+      <Card>
+        <Layout>
+          <KeyID>{task._id}</KeyID>
+          <Row>
+            <Assignee user={task?.assignee} />
+            <Status backgroundColor={statusColor?.background} textColor={statusColor?.text}>
+              {statusMessage}
+            </Status>
+          </Row>
+          <Row>
+            <Description>
+              <span>{task.description}</span>
+            </Description>
+          </Row>
+        </Layout>
+      </Card>
+  );
+};
+
+type DraftTaskCardProps = {
+  draft: DraftTask;
+  draftActions: DraftTaskActions;
+}
+
+export function DraftTaskCard({ draft, draftActions }: DraftTaskCardProps): React.ReactElement {
+  const { updateDraft, deleteDraft, saveDraft } = draftActions;
+  const statusColor = statusColors.get(draft.status);
+  const statusMessage = statusMessages.get(draft.status)
   return (
     <Card>
       <Layout>
         <Row>
-          <Assignee user={task?.assignee} />
-          <Status backgroundColor={colors?.background} textColor={colors?.text}>
-            {statusMessage.get(task.status)}
+          <Assignee />
+          <Status backgroundColor={statusColor?.background} textColor={statusColor?.text}>
+            {statusMessage}
           </Status>
         </Row>
         <Row>
-          <Description>
-            <span>{task.description}</span>
-          </Description>
+          <DraftInput
+            placeholder="Enter a task..."
+            onChange={(e) => {
+              updateDraft({
+                ...draft,
+                description: e.target.value,
+              })
+            }}
+            value={draft.description}
+          />
+        </Row>
+        <Row>
+          <DeleteButton onClick={() => { deleteDraft() }}>Delete</DeleteButton>
+          <SubmitButton onClick={async () => { await saveDraft() }} disabled={!draft.description}>Add</SubmitButton>
         </Row>
       </Layout>
     </Card>
   );
 };
-export default TaskCard;
+const DraftInput = styled(TextInput)`
+  width: 100%;
+`
+interface ButtonProps {
+  disabled?: boolean;
+  onClick?: () => void;
+}
+const SubmitButton: React.FC<ButtonProps> = (props) => (
+  <Button variant="primary" {...props}>Add</Button>
+)
+const DeleteButton: React.FC<ButtonProps> = (props) => (
+  <Button variant="danger" {...props}>Delete</Button>
+)
 
 interface AssigneeProps { user?: User }
 function Assignee({ user }: AssigneeProps) {
@@ -62,9 +122,6 @@ function Assignee({ user }: AssigneeProps) {
       padding-right: 16px;
       border-radius: 500px;
       border: 0.5px solid transparent;
-      /* :hover {
-        border: 0.5px solid ${uiColors.gray.light1};
-      } */
     `}>
       <Avatar src={image} />
       <Username>{username}</Username>

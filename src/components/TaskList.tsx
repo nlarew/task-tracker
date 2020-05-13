@@ -1,34 +1,82 @@
-/** @jsx jsx */
 import * as React from "react";
-import { css, jsx } from "@emotion/core";
+// import { css, jsx } from "@emotion/core";
 import styled from "@emotion/styled";
-import { Task } from "../types";
-import { motion } from "framer-motion";
-import useSort from "../utils/useSort";
+import { Task, TaskStatus } from "../types";
 import { uiColors } from "@leafygreen-ui/palette";
 
-import TaskCard from "./TaskCard";
+import TaskCard, { DraftTaskCard } from "./TaskCard";
+import { TaskActions } from "../hooks/useTasks";
+
+export type DraftTask = {
+  status: TaskStatus;
+  description: string;
+  assignee?: string;
+};
+
+export interface DraftTaskActions {
+  updateDraft: (draft: DraftTask) => void;
+  deleteDraft: () => void;
+  saveDraft: () => Promise<void>;
+}
+export function useDraft(
+  taskActions: TaskActions
+): [DraftTask | null, DraftTaskActions] {
+  const [draft, setDraft] = React.useState<DraftTask | null>(null);
+  const actions: DraftTaskActions = {
+    updateDraft: (updatedDraft: DraftTask) => {
+      setDraft(updatedDraft);
+    },
+    deleteDraft: () => {
+      setDraft(null);
+    },
+    saveDraft: async () => {
+      if (draft) {
+        await taskActions.addTask(draft);
+        setDraft(null);
+      }
+    },
+  };
+  return [draft, actions];
+}
 
 interface TaskListProps {
-  title: string;
+  status: TaskStatus;
+  displayName: string;
   tasks: Task[];
+  taskActions: TaskActions;
 }
-const TaskList: React.FC<TaskListProps> = ({ title, tasks }) => {
-  const { sorted } = useSort(tasks, { sortBy: "status" });
-
+const TaskList: React.FC<TaskListProps> = ({
+  status,
+  displayName,
+  tasks,
+  taskActions,
+}) => {
+  const [draft, draftActions] = useDraft(taskActions);
+  
   return (
     <Layout>
       <ListContainer>
-        <ListTitle>{title}</ListTitle>
-        {sorted.map((task, i) => {
-          const isLast = i + 1 === tasks.length;
-          return (
-            <ListItem key={task._id}>
-              <TaskCard task={task} />
-            </ListItem>
-          );
-        })}
-        <ListButton>+ Add Task</ListButton>
+        <ListTitle>{displayName}</ListTitle>
+        {tasks.map((task) => (
+          <ListItem key={task._id}>
+            <TaskCard task={task} />
+          </ListItem>
+        ))}
+
+        {draft && (
+          <ListItem>
+            <DraftTaskCard draft={draft} draftActions={draftActions} />
+          </ListItem>
+        )}
+        {!draft && (
+          <ListButton
+            onClick={() =>
+              draftActions.updateDraft({ status, description: "" })
+            }
+          >
+            + Add Task
+          </ListButton>
+        )}
       </ListContainer>
     </Layout>
   );
@@ -54,9 +102,14 @@ const ListContainer = styled.div`
   padding: 24px;
   background: ${uiColors.gray.light1};
   border-radius: 4px;
+  :not(:last-child) {
+    margin-bottom: 8px;
+  }
 `;
 const ListItem = styled.div`
-  margin-bottom: 16px;
+  :not(:last-child) {
+    margin-bottom: 16px;
+  }
 `;
 const ListButton = styled.button`
   padding: 8px;

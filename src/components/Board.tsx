@@ -2,57 +2,61 @@ import * as React from "react";
 import styled from "@emotion/styled";
 import TaskList from "./TaskList";
 import { Task, TaskStatus } from "../types";
-import { useRealmApp } from "../realm/RealmApp";
-import useGroupBy from "../utils/useGroupBy";
+import { useTasks } from "../hooks/useTasks";
 
-import { useQuery } from "@apollo/react-hooks";
-import gql from "graphql-tag";
-const getAllTasksQuery = gql`
-  query GetAllTasks {
-    tasks {
-      _id
-      description
-      status
-      assignee {
-        _id
-        name
-        image
-        user_id
-      }
-    }
-  }
-`;
-
-interface BoardProps {
-  // tasks: Task[];
+type TaskListDescription = {
+  status: TaskStatus;
+  displayName: string;
+  tasks: Array<Task>;
 }
 
-const Board: React.FC<BoardProps> = ({}) => {
-  const { logOut, user } = useRealmApp();
-  const { loading, error, data } = useQuery(getAllTasksQuery);
+function useTaskLists(tasks: Array<Task>): Array<TaskListDescription> {
+  return React.useMemo(
+    () => ([
+      {
+        status: TaskStatus.Open,
+        displayName: "Open",
+        tasks: tasks.filter(
+          (task: Task) => TaskStatus[task.status] === TaskStatus.Open
+        )
+      },
+      {
+        status: TaskStatus.InProgress,
+        displayName: "In Progress",
+        tasks: tasks.filter(
+          (task: Task) => TaskStatus[task.status] === TaskStatus.InProgress
+        )
+      },
+      {
+        status: TaskStatus.Complete,
+        displayName: "Complete",
+        tasks: tasks.filter(
+          (task: Task) => TaskStatus[task.status] === TaskStatus.Complete
+        )
+      },
+    ]),
+    [tasks]
+  );
+}
 
-  console.log("loading?", loading, "data:", data, "error:", error);
-  // const grouped = useGroupBy<Task>(data?.tasks || [], "status");
-  // const lists = Object.entries(grouped).map(([id, tasks]) => ({ id, tasks }));
-  const tasks = data?.tasks || [];
-  const lists = {
-    "Open": tasks.filter((task: Task) => TaskStatus[task.status] === TaskStatus.Open),
-    "In Progress": tasks.filter(
-      (task: Task) => TaskStatus[task.status] === TaskStatus.InProgress
-    ),
-    "Complete": tasks.filter(
-      (task: Task) => TaskStatus[task.status] === TaskStatus.Complete
-    ),
-  };
+const Board: React.FC = () => {
+  const { tasks, loading, actions: taskActions } = useTasks();
+  const lists = useTaskLists(tasks);
+
   return (
     <TaskBoard>
       {!loading && (
         <TaskLists>
-          {Object.entries(lists).map(([status, tasks]) => {
-            console.log("status,tasks", status, tasks)
+          {lists.map(({ status, displayName, tasks }) => {
             return (
-              <TaskList key={status} title={status} tasks={tasks} />
-            )
+              <TaskList
+                key={status}
+                status={status}
+                displayName={displayName}
+                tasks={tasks}
+                taskActions={taskActions}
+              />
+            );
           })}
         </TaskLists>
       )}
@@ -62,6 +66,7 @@ const Board: React.FC<BoardProps> = ({}) => {
 export default Board;
 
 const TaskBoard = styled.div`
+  height: 100vh;
   padding: 0 64px;
   display: flex;
   flex-direction: column;
@@ -70,11 +75,7 @@ const TaskBoard = styled.div`
 
 const TaskLists = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
 `;
-
-// const ProjectTitle = styled.h1`
-//   color: white;
-//   /* padding: 0 24px; */
-// `;

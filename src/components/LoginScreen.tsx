@@ -1,11 +1,8 @@
-/** @jsx jsx */
 import * as React from "react";
 import * as RealmWeb from "realm-web";
 import { useRealmApp } from "../realm/RealmApp";
 
 import styled from "@emotion/styled";
-import { css, jsx } from "@emotion/core";
-import { uiColors } from "@leafygreen-ui/palette";
 import Button from "@leafygreen-ui/button";
 import TextInput from "@leafygreen-ui/text-input";
 
@@ -19,6 +16,7 @@ const LoginScreen: React.FC = () => {
     return await app.logIn(RealmWeb.Credentials.emailPassword(email, password));
   };
   return (
+    <Container>
     <Card>
       <Layout>
         <LoginFormRow>
@@ -48,9 +46,17 @@ const LoginScreen: React.FC = () => {
         <Button variant="primary" onClick={() => handleLogin()}>Log In</Button>
       </Layout>
     </Card>
+    </Container>
   );
 };
 export default LoginScreen;
+
+const Container = styled.div`
+  height: 100vh;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+`
 
 const Layout = styled.div`
   padding: 8px;

@@ -1347,7 +1347,7 @@
     "@leafygreen-ui/hooks" "^2.0.0"
     "@leafygreen-ui/lib" "^4.0.0"
 
-"@leafygreen-ui/lib@^4.0.0", "@leafygreen-ui/lib@^4.3.1", "@leafygreen-ui/lib@^4.4.1":
+"@leafygreen-ui/lib@^4.0.0", "@leafygreen-ui/lib@^4.2.0", "@leafygreen-ui/lib@^4.3.1", "@leafygreen-ui/lib@^4.4.1":
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/@leafygreen-ui/lib/-/lib-4.4.1.tgz#31b7946458859602ccdcf1fb4f1f300ceab80bf5"
   integrity sha512-ZVa/LlcoWBXLpks5XQ6MsM/f3cMqxxsqD8iQlGkGncJZN8cJ7NnxqtyY7QsbGSHNQzSNJbOtHxg6dpYRuAWcPw==
@@ -1357,10 +1357,29 @@
     facepaint "^1.2.1"
     polished "^2.3.0"
 
+"@leafygreen-ui/modal@^3.0.4":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@leafygreen-ui/modal/-/modal-3.0.4.tgz#8b96844a7e25e0cb5fb095c8ee5173469f5e9817"
+  integrity sha512-tNW5FsPgQE2xBV/M60+BvOotAXBnuxi90hbJRsLquy+JXHrPg92YQ5F5vFNAsBidHVe1BLgCRpasL6vaeZL3XQ==
+  dependencies:
+    "@leafygreen-ui/hooks" "^2.0.0"
+    "@leafygreen-ui/icon" "^5.1.0"
+    "@leafygreen-ui/lib" "^4.2.0"
+    "@leafygreen-ui/palette" "^2.0.0"
+    "@leafygreen-ui/portal" "^2.0.0"
+    react-transition-group "^4.2.1"
+
 "@leafygreen-ui/palette@^2.0.0", "@leafygreen-ui/palette@^2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@leafygreen-ui/palette/-/palette-2.0.1.tgz#37b2982d80df7faaca0c7f3c473fb6636786da3c"
   integrity sha512-xwD6kOokWvaygxF0T2gnf77HEu68G7EXr1ZrNiNtZzg80Y1V2hikhUNoESWij6g/A6qJZvAiwpseflVo3PnlHQ==
+
+"@leafygreen-ui/portal@^2.0.0":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@leafygreen-ui/portal/-/portal-2.0.1.tgz#bb39ab0edcd126d47e0a8fd6cc14f8348988bb41"
+  integrity sha512-Wni9qMh43BsQSgUpMKy5Nce/xPJA2TzCaOQUR9pOB1uHWJusdyktnTiSRaSm/lnCpwy4sHLPZUzAsBoxm3d6sQ==
+  dependencies:
+    "@leafygreen-ui/lib" "^4.4.1"
 
 "@leafygreen-ui/text-input@^1.0.4":
   version "1.0.4"
@@ -4069,7 +4088,7 @@ cssstyle@^1.0.0, cssstyle@^1.1.1:
   dependencies:
     cssom "0.3.x"
 
-csstype@^2.2.0, csstype@^2.5.7:
+csstype@^2.2.0, csstype@^2.5.7, csstype@^2.6.7:
   version "2.6.10"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.10.tgz#e63af50e66d7c266edb6b32909cfd0aabe03928b"
   integrity sha512-D34BqZU4cIlMCY93rZHbrq9pjTAQJ3U8S8rfBqjwHxkGPThWFjzZDQpgMJY0QViLxth6ZKYiwFBo14RdN44U/w==
@@ -4364,6 +4383,14 @@ dom-converter@^0.2:
   integrity sha512-gd3ypIPfOMr9h5jIKq8E3sHOTCjeirnl0WK5ZdS1AW0Odt0b1PaWaHdJ4Qk4klv+YB9aJBS7mESXjFoDQPu6DA==
   dependencies:
     utila "~0.4"
+
+dom-helpers@^5.0.1:
+  version "5.1.4"
+  resolved "https://registry.yarnpkg.com/dom-helpers/-/dom-helpers-5.1.4.tgz#4609680ab5c79a45f2531441f1949b79d6587f4b"
+  integrity sha512-TjMyeVUvNEnOnhzs6uAn9Ya47GmMo3qq7m+Lr/3ON0Rs5kHvb8I+SQYjLUSYn7qhEm0QjW0yrBkvz9yOrwwz1A==
+  dependencies:
+    "@babel/runtime" "^7.8.7"
+    csstype "^2.6.7"
 
 dom-serializer@0:
   version "0.2.2"
@@ -10414,6 +10441,16 @@ react-scripts@3.4.1:
     workbox-webpack-plugin "4.3.1"
   optionalDependencies:
     fsevents "2.1.2"
+
+react-transition-group@^4.2.1:
+  version "4.4.1"
+  resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.1.tgz#63868f9325a38ea5ee9535d828327f85773345c9"
+  integrity sha512-Djqr7OQ2aPUiYurhPalTrVy9ddmFCCzwhqQmtN+J3+3DzLO209Fdr70QrN8Z3DsglWql6iY1lDWAfpFiBtuKGw==
+  dependencies:
+    "@babel/runtime" "^7.5.5"
+    dom-helpers "^5.0.1"
+    loose-envify "^1.4.0"
+    prop-types "^15.6.2"
 
 react@^16.13.1:
   version "16.13.1"

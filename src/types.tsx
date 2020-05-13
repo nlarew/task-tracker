@@ -1,5 +1,3 @@
-import * as RealmWeb from "realm-web"
-
 type ObjectID = string;
 type ProjectID = ObjectID;
 type UserID = ObjectID;
