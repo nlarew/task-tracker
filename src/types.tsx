@@ -1,5 +1,5 @@
-type ObjectID = string;
-type UserID = string;
+export type ObjectID = string;
+export type UserID = string;
 
 export type Project = {
   _id: ObjectID;
