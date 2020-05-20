@@ -1,0 +1,7 @@
+schema: ./src/realm/schema.graphql
+documents: ./src/**/*.graphql
+generates:
+  src/graphql-types.d.ts:
+    plugins:
+      - typescript
+      - typescript-operations

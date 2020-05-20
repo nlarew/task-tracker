@@ -1,0 +1,13 @@
+mutation DeleteTask($taskId: ObjectId!) {
+  deletedTask: deleteOneTask(query: { _id: $taskId }) {
+    _id
+    description
+    status
+    assignee {
+      _id
+      name
+      image
+      user_id
+    }
+  }
+}

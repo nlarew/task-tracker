@@ -1,0 +1,13 @@
+mutation AddTask($task: TaskInsertInput!) {
+  task: insertOneTask(data: $task) {
+    _id
+    description
+    status
+    assignee {
+      _id
+      name
+      image
+      user_id
+    }
+  }
+}

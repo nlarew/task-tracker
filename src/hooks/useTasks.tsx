@@ -2,61 +2,26 @@ import * as React from "react";
 import { Task, TaskStatus, User } from "../types";
 
 import { useQuery, useMutation } from "@apollo/react-hooks";
-import gql from "graphql-tag";
 import { DraftTask } from "./useDraftTask";
 
-const fragments = {
-  fullTask: gql`
-    fragment FullTask on Task {
-      _id
-      description
-      status
-      assignee {
-        _id
-        name
-        image
-        user_id
-      }
-    }
-  `,
-};
+import {
+  AddTaskMutation,
+  AddTaskMutationVariables,
+  UpdateTaskMutation,
+  UpdateTaskMutationVariables,
+  DeleteTaskMutation,
+  DeleteTaskMutationVariables,
+} from "../graphql-types";
+import { loader } from "graphql.macro";
 
 const queries = {
-  getAllTasks: gql`
-    query GetAllTasks {
-      tasks {
-        ...FullTask
-      }
-    }
-    ${fragments.fullTask}
-  `,
+  getAllTasks: loader("../realm/operations/GetAllTasks.graphql"),
 };
 
 const mutations = {
-  addTask: gql`
-    mutation AddTask($task: TaskInsertInput!) {
-      task: insertOneTask(data: $task) {
-        ...FullTask
-      }
-    }
-    ${fragments.fullTask}
-  `,
-  updateTask: gql`
-    mutation UpdateTask($taskId: ObjectId!, $updates: TaskUpdateInput!) {
-      task: updateOneTask(query: { _id: $taskId }, set: $updates) {
-        ...FullTask
-      }
-    }
-    ${fragments.fullTask}
-  `,
-  deleteTask: gql`
-    mutation DeleteTask($taskId: ObjectId!) {
-      deletedTask: deleteOneTask(query: { _id: $taskId }) {
-        ...FullTask
-      }
-    }
-    ${fragments.fullTask}
-  `,
+  addTask: loader("../realm/operations/AddTask.graphql"),
+  updateTask: loader("../realm/operations/UpdateTask.graphql"),
+  deleteTask: loader("../realm/operations/DeleteTask.graphql"),
 };
 
 interface TaskInput {
@@ -95,16 +60,19 @@ export function useTasks(): {
   }, [error]);
 
   // Define task mutations
-  const [addTask] = useMutation<{ task: Task }, { task: TaskInput }>(
+  const [addTask] = useMutation<AddTaskMutation, AddTaskMutationVariables>(
     mutations.addTask
   );
+  
   const [updateTask] = useMutation<
-    { task: Task },
-    { taskId: string; updates: TaskInput }
+    UpdateTaskMutation,
+    UpdateTaskMutationVariables
   >(mutations.updateTask);
-  const [deleteTask] = useMutation<{ deletedTask: Task }, { taskId: string }>(
-    mutations.deleteTask
-  );
+
+  const [deleteTask] = useMutation<
+    DeleteTaskMutation,
+    DeleteTaskMutationVariables
+  >(mutations.deleteTask);
 
   const actions: TaskActions = {
     addTask: async (draft: DraftTask) => {

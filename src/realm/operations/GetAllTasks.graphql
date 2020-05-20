@@ -1,0 +1,13 @@
+query GetAllTasks {
+  tasks {
+    _id
+    description
+    status
+    assignee {
+      _id
+      name
+      image
+      user_id
+    }
+  }
+}
