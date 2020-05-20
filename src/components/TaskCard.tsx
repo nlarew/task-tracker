@@ -42,7 +42,6 @@ export default function TaskCard({ task }: TaskCardProps): React.ReactElement {
   return (
       <Card>
         <Layout>
-          <KeyID>{task._id}</KeyID>
           <Row>
             <Assignee user={task?.assignee} />
             <Status backgroundColor={statusColor?.background} textColor={statusColor?.text}>
@@ -54,6 +53,7 @@ export default function TaskCard({ task }: TaskCardProps): React.ReactElement {
               <span>{task.description}</span>
             </Description>
           </Row>
+          <KeyID>{task._id}</KeyID>
         </Layout>
       </Card>
   );

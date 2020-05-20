@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "@emotion/styled";
-import { TaskLists } from "./TaskList";
+import { TaskLists } from "./TaskLists";
 import { useTasks } from "../hooks/useTasks";
 
 const Board: React.FC = () => {
