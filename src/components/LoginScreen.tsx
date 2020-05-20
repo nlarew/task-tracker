@@ -35,12 +35,12 @@ const LoginScreen: React.FC = () => {
         </LoginFormRow>
         <LoginFormRow>
           <TextInput
-            type="password"
-            label="Password"
             onChange={(e) => {
               setPassword(e.target.value);
             }}
             value={password}
+            type="password"
+            label="Password"
           />
         </LoginFormRow>
         <Button variant="primary" onClick={() => handleLogin()}>Log In</Button>

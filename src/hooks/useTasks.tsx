@@ -5,24 +5,27 @@ import { useQuery, useMutation } from "@apollo/react-hooks";
 import { DraftTask } from "./useDraftTask";
 
 import {
+  useAddTaskMutation,
   AddTaskMutation,
   AddTaskMutationVariables,
+  useUpdateTaskMutation,
   UpdateTaskMutation,
   UpdateTaskMutationVariables,
+  DeleteTaskDocument,
   DeleteTaskMutation,
   DeleteTaskMutationVariables,
-} from "../graphql-types";
-import { loader } from "graphql.macro";
+} from "./../graphql-types";
+// import { loader } from "graphql.macro";
 
-const queries = {
-  getAllTasks: loader("../realm/operations/GetAllTasks.graphql"),
-};
+// const queries = {
+//   getAllTasks: loader("../realm/operations/GetAllTasks.graphql"),
+// };
 
-const mutations = {
-  addTask: loader("../realm/operations/AddTask.graphql"),
-  updateTask: loader("../realm/operations/UpdateTask.graphql"),
-  deleteTask: loader("../realm/operations/DeleteTask.graphql"),
-};
+// const mutations = {
+//   addTask: loader("../realm/operations/AddTask.graphql"),
+//   updateTask: loader("../realm/operations/UpdateTask.graphql"),
+//   deleteTask: loader("../realm/operations/DeleteTask.graphql"),
+// };
 
 interface TaskInput {
   status?: string;
@@ -60,19 +63,21 @@ export function useTasks(): {
   }, [error]);
 
   // Define task mutations
-  const [addTask] = useMutation<AddTaskMutation, AddTaskMutationVariables>(
-    mutations.addTask
-  );
+  // const [addTask] = useMutation<AddTaskMutation, AddTaskMutationVariables>(
+  //   mutations.addTask
+  // );
+  const [addTask] = useAddTaskMutation();
   
-  const [updateTask] = useMutation<
-    UpdateTaskMutation,
-    UpdateTaskMutationVariables
-  >(mutations.updateTask);
-
+  // const [updateTask] = useMutation<
+  //   UpdateTaskMutation,
+  //   UpdateTaskMutationVariables
+  // >(mutations.updateTask);
+  const [updateTask] = useUpdateTaskMutation();
+  
   const [deleteTask] = useMutation<
     DeleteTaskMutation,
     DeleteTaskMutationVariables
-  >(mutations.deleteTask);
+  >(DeleteTaskDocument);
 
   const actions: TaskActions = {
     addTask: async (draft: DraftTask) => {
