@@ -12,30 +12,6 @@ import { uiColors } from "@leafygreen-ui/palette";
 interface TaskCardProps {
   task: Task;
 }
-const statusMessages = new Map<TaskStatus, string>([
-  [TaskStatus.Open, "Open"],
-  [TaskStatus.InProgress, "In Progress"],
-  [TaskStatus.Complete, "Complete"],
-]);
-const statusColors = new Map<TaskStatus, { background: string; text: string }>([
-  [
-    TaskStatus.Open,
-    { background: uiColors.blue.base, text: uiColors.gray.light3 },
-  ],
-  [
-    TaskStatus.InProgress,
-    { background: uiColors.yellow.base, text: uiColors.gray.dark2 },
-  ],
-  [
-    TaskStatus.Complete,
-    { background: uiColors.green.base, text: uiColors.gray.light3 },
-  ],
-]);
-
-const KeyID = styled.div`
-  font-size: 10px;
-`
-
 export default function TaskCard({ task }: TaskCardProps): React.ReactElement {
   const statusColor = statusColors.get(task.status);
   const statusMessage = statusMessages.get(task.status)
@@ -97,21 +73,53 @@ export function DraftTaskCard({ draft, draftActions }: DraftTaskCardProps): Reac
     </Card>
   );
 };
+
+const statusMessages = new Map<TaskStatus, string>([
+  [TaskStatus.Open, "Open"],
+  [TaskStatus.Inprogress, "In Progress"],
+  [TaskStatus.Complete, "Complete"],
+]);
+
+const statusColors = new Map<TaskStatus, { background: string; text: string }>([
+  [
+    TaskStatus.Open,
+    { background: uiColors.blue.base, text: uiColors.gray.light3 },
+  ],
+  [
+    TaskStatus.Inprogress,
+    { background: uiColors.yellow.base, text: uiColors.gray.dark2 },
+  ],
+  [
+    TaskStatus.Complete,
+    { background: uiColors.green.base, text: uiColors.gray.light3 },
+  ],
+]);
+
+const KeyID = styled.div`
+  font-size: 10px;
+`
+
 const DraftInput = styled(TextInput)`
   width: 100%;
 `
+
 interface ButtonProps {
   disabled?: boolean;
   onClick?: () => void;
 }
+
 const SubmitButton: React.FC<ButtonProps> = (props) => (
   <Button variant="primary" {...props}>Add</Button>
 )
+
 const DeleteButton: React.FC<ButtonProps> = (props) => (
   <Button variant="danger" {...props}>Delete</Button>
 )
 
-interface AssigneeProps { user?: User }
+interface AssigneeProps {
+  user?: User | null
+}
+
 function Assignee({ user }: AssigneeProps) {
   const image = user?.image || "https://www.shareicon.net/data/48x48/2015/09/24/106423_user_512x512.png"
   const username = user?.name || "No assignee"
@@ -128,6 +136,7 @@ function Assignee({ user }: AssigneeProps) {
     </div>
   );
 }
+
 const Username = styled.div`
   font-size: 16px;
 `

@@ -5,12 +5,17 @@ import styled from "@emotion/styled";
 import { uiColors } from "@leafygreen-ui/palette";
 import { DragDropContext, Droppable, Draggable, DropResult, DragDropContextProps } from "react-beautiful-dnd";
 
-import { Task, TaskStatus, statusMap } from "../types";
+import { Task, TaskStatus } from "../types";
 import TaskCard, { DraftTaskCard } from "./TaskCard";
 import { TaskActions } from "../hooks/useTasks";
 import useDraftTask from "../hooks/useDraftTask";
 import useTaskLists from "../hooks/useTaskLists";
 
+export const taskStatus = new Map<string, TaskStatus>([
+  ["OPEN", TaskStatus.Open],
+  ["INPROGRESS", TaskStatus.Inprogress],
+  ["COMPLETE", TaskStatus.Complete],
+]);
 
 interface TaskListsProps {
   tasks: Task[];
@@ -33,10 +38,10 @@ export function TaskLists(props: TaskListsProps): React.ReactElement {
     // Manipulate the in-memory lists, preserving drag and drop order
     listActions.handleDragAndDrop(result);
     // Update the Task if it changed status
-    const newStatus = statusMap.get(destinationStatus);
+    const newStatus = taskStatus.get(destinationStatus);
     if (newStatus) {
       taskActions.updateTask(taskId, {
-        status: statusMap.get(newStatus),
+        status: taskStatus.get(newStatus),
       });
     }
   }

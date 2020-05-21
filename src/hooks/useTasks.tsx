@@ -1,31 +1,14 @@
 import * as React from "react";
 import { Task, TaskStatus, User } from "../types";
 
-import { useQuery, useMutation } from "@apollo/react-hooks";
 import { DraftTask } from "./useDraftTask";
 
 import {
+  useGetAllTasksQuery,
   useAddTaskMutation,
-  AddTaskMutation,
-  AddTaskMutationVariables,
   useUpdateTaskMutation,
-  UpdateTaskMutation,
-  UpdateTaskMutationVariables,
-  DeleteTaskDocument,
-  DeleteTaskMutation,
-  DeleteTaskMutationVariables,
-} from "./../graphql-types";
-// import { loader } from "graphql.macro";
-
-// const queries = {
-//   getAllTasks: loader("../realm/operations/GetAllTasks.graphql"),
-// };
-
-// const mutations = {
-//   addTask: loader("../realm/operations/AddTask.graphql"),
-//   updateTask: loader("../realm/operations/UpdateTask.graphql"),
-//   deleteTask: loader("../realm/operations/DeleteTask.graphql"),
-// };
+  useDeleteTaskMutation,
+} from "./../graphql-operations";
 
 interface TaskInput {
   status?: string;
@@ -49,41 +32,30 @@ export function useTasks(): {
   loading: boolean;
   actions: TaskActions;
 } {
-  const [tasks, setTasks] = React.useState<Array<Task>>([]);
-  const { loading, error, data } = useQuery(queries.getAllTasks);
-  // Wait for the query to finish loading and update state with the returned tasks
-  React.useEffect(() => {
-    if (!loading && data?.tasks) {
-      setTasks(data.tasks);
-    }
-  }, [loading, data]);
-  // Throw if there's an error
-  React.useEffect(() => {
-    if (error) throw error;
-  }, [error]);
+  const [tasks, setTasks] = React.useState<Task[]>([]);
 
-  // Define task mutations
-  // const [addTask] = useMutation<AddTaskMutation, AddTaskMutationVariables>(
-  //   mutations.addTask
-  // );
+  // Query for Tasks
+  const { loading, error, data } = useGetAllTasksQuery();
+  React.useEffect(() => {
+    // Throw if there's an error
+    if (error) throw error;
+
+    // Wait for the query to finish loading and update state with the returned tasks
+    if (!loading && data?.tasks) {
+      setTasks(data.tasks as Task[]);
+    }
+  }, [loading, error, data]);
+
+  // Create Task Mutation Functions
   const [addTask] = useAddTaskMutation();
-  
-  // const [updateTask] = useMutation<
-  //   UpdateTaskMutation,
-  //   UpdateTaskMutationVariables
-  // >(mutations.updateTask);
   const [updateTask] = useUpdateTaskMutation();
-  
-  const [deleteTask] = useMutation<
-    DeleteTaskMutation,
-    DeleteTaskMutationVariables
-  >(DeleteTaskDocument);
+  const [deleteTask] = useDeleteTaskMutation();
 
   const actions: TaskActions = {
     addTask: async (draft: DraftTask) => {
       const variables = {
         task: {
-          status: String(draft.status),
+          status: draft.status,
           description: draft.description,
           assignee: draft.assignee ? { link: draft.assignee } : undefined,
         },
@@ -96,7 +68,7 @@ export function useTasks(): {
       const variables = {
         taskId: taskId,
         updates: {
-          status: updated.status ? String(updated.status) : undefined,
+          status: updated?.status ?? undefined,
           description: updated?.description ?? undefined,
           assignee: updated.assignee
             ? { link: updated.assignee.user_id }

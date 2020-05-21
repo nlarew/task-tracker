@@ -1173,6 +1173,14 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.5.tgz#8eed982e2ee6f7f4e44c253e12962980791efd46"
   integrity sha512-6U71C2Wp7r5XtFtQzYrW5iKFT67OixrSxjI4MptCHzdSVlgabczzqLe0ZSgnub/5Kp4hSbpDB1tMytZY9pwxxA==
 
+"@graphql-codegen/add@1.14.0":
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/@graphql-codegen/add/-/add-1.14.0.tgz#350c20624551c647f9b1e385953422fa4555f7ba"
+  integrity sha512-/H66a/H/vOPzhS9Wbx7U7Kx785XQxfI+HM2zGhSvAxVFf2HmucBQNOU9PEgLTUvWCEo7t23PzymlTqoh4d9wfA==
+  dependencies:
+    "@graphql-codegen/plugin-helpers" "1.14.0"
+    tslib "~2.0.0"
+
 "@graphql-codegen/cli@^1.14.0":
   version "1.14.0"
   resolved "https://registry.yarnpkg.com/@graphql-codegen/cli/-/cli-1.14.0.tgz#23de6363f0f6705130747f7d04d00c0ccab144bc"
@@ -1229,6 +1237,16 @@
     "@graphql-codegen/plugin-helpers" "1.14.0"
     "@graphql-toolkit/common" "~0.10.4"
     "@graphql-toolkit/schema-merging" "~0.10.4"
+    tslib "~2.0.0"
+
+"@graphql-codegen/import-types-preset@^1.14.0":
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/@graphql-codegen/import-types-preset/-/import-types-preset-1.14.0.tgz#404c2bb772751e63293440d0a4fe95bbaab22b2e"
+  integrity sha512-q1IEF9BlQF4Qm/u+MC9CZRRWrWQSOq85D1AtyETZmaCSsbXsEmK5uDoyn/W/sAC5KlxGox+1VLiqz0OImiYeIw==
+  dependencies:
+    "@graphql-codegen/add" "1.14.0"
+    "@graphql-codegen/plugin-helpers" "1.14.0"
+    "@graphql-codegen/visitor-plugin-common" "1.14.0"
     tslib "~2.0.0"
 
 "@graphql-codegen/plugin-helpers@1.14.0":
